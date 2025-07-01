@@ -7,6 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/hooks/use-toast";
 import { saveCalendars } from "../_actions/save-calendars";
 import { getCalendars } from "../_actions/get-calendars";
+import { reauthAcct } from "@/lib/reauthAcct";
 
 interface GoogleCalendar {
   id: string;
@@ -22,32 +23,13 @@ export function CalendarSelector() {
   const { user } = useUser();
   const { toast } = useToast();
 
-  async function reauthAcct() {
-    if(user) {
-      const googleAccount = user.externalAccounts
-        .find(ea => ea.provider === "google")
-
-      const reauth = await googleAccount?.reauthorize({
-        redirectUrl: window.location.href,
-        additionalScopes: [
-          "https://www.googleapis.com/auth/calendar.readonly",
-          'https://www.googleapis.com/auth/calendar.events.readonly'
-        ]
-      })
-
-      if(reauth?.verification?.externalVerificationRedirectURL) {
-        window.location.href = reauth?.verification?.externalVerificationRedirectURL.href
-      }
-    }
-  }
-
   const fetchCalendars = async (savedSelections?: { id: string; name: string }[]) => {
     setIsLoading(true);
     setError(null);
     try {
       const googleAccount = user?.externalAccounts.find(ea => ea.provider === "google")
       if(!googleAccount?.approvedScopes?.includes("https://www.googleapis.com/auth/calendar.readonly")) {
-        void reauthAcct()
+        void reauthAcct(user)
         return
       }
 
