@@ -6,6 +6,7 @@ import { AvailabilitySchedule } from "./settings/_components/availability-schedu
 import { CalendarSelector } from "./settings/_components/calendar-selector";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/ui/navbar";
+import { DriveViewer } from "./settings/_components/drive-viewer";
 
 const tabs = [
   { 
@@ -18,6 +19,11 @@ const tabs = [
     label: "Google Calendar",
     description: "Connect your Google Calendar to sync your availability and bookings"
   },
+  {
+    id: "drive",
+    label: "Google Drive",
+    description: "Connect your Google Drive to sync your files"
+  }
 ] as const;
 
 type TabId = (typeof tabs)[number]["id"];
@@ -65,6 +71,7 @@ export default function Settings() {
                   <div className="pt-4">
                     {tab.id === "availability" && <AvailabilitySchedule />}
                     {tab.id === "calendars" && <CalendarSelector />}
+                    {tab.id === "drive" && <DriveViewer />}
                   </div>
                 </div>
               )
