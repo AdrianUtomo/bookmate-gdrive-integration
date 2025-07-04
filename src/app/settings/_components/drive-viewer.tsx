@@ -33,19 +33,6 @@ export function DriveViewer() {
 			[user?.externalAccounts]
 	);
 
-	const connectGoogleAccount = useCallback(async () => {
-			if (!user) return;
-
-			try {
-					await user.createExternalAccount({
-							strategy: "oauth_google",
-							redirectUrl: window.location.href,
-					});
-			} catch (error) {
-					console.error("Error connecting Google Account", error);
-			}
-	}, [user]);
-
 	const fetchFiles = useCallback(async () => {
 			if (!isGoogleConnected || !session) {
 					setError("Failed to connect Google Account. Please try again");
@@ -100,8 +87,6 @@ export function DriveViewer() {
 			}
 	}, [isGoogleConnected, session]);
 
-	console.log(typeof user?.externalAccounts.find(ea => ea.provider === "google")?.approvedScopes)
-
 	return (
 			<>
 					{isGoogleConnected ? (
@@ -114,7 +99,9 @@ export function DriveViewer() {
 							</button>
 					) : (
 							<button
-									onClick={connectGoogleAccount}
+									onClick={() => {
+										reauthAcct(user);
+									}}
 									className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 disabled:opacity-50"
 							>
 									Connect Google Drive
