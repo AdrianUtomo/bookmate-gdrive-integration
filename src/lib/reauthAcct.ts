@@ -1,7 +1,7 @@
 export async function reauthAcct(user: any) {
   if (user) {
     const googleAccount = user?.externalAccounts.find(
-      (ea: any) => ea.provider === "google"
+      (ea: any) => ea.provider === "google" && ea.verification.status === "verified" && !ea.verification.error
     );
 
     if (!googleAccount) {
